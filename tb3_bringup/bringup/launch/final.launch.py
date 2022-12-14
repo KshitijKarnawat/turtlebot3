@@ -134,10 +134,10 @@ def generate_launch_description():
                             #   'use_namespace': 'True',
                               'rviz_config': rviz_config_file}.items())
     
-    # start_odom_updater_cmd = Node(
-    #     package='odom_updater',
-    #     executable='odom_updater',
-    #     output='screen')
+    start_odom_updater_cmd = Node(
+        package='odom_updater',
+        executable='odom_updater',
+        output='screen')
     
     start_world_odom_broadcaster_cmd = Node(
         package='world_odom_broadcaster',
@@ -256,7 +256,7 @@ def generate_launch_description():
     for simulation_instance_cmd in nav_instances_cmds:
         ld.add_action(simulation_instance_cmd)
         
-    # ld.add_action(start_odom_updater_cmd)
+    ld.add_action(start_odom_updater_cmd)
     ld.add_action(start_world_odom_broadcaster_cmd)
     ld.add_action(start_aruco_detection_node_cmd)
     ld.add_action(start_target_reacher)
