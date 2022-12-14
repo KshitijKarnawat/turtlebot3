@@ -24,7 +24,7 @@ public:
 private:
     // attributes
     rclcpp::TimerBase::SharedPtr m_timer;
-    std::shared_ptr<tf2_ros::TransformBroadcaster> m_tf_broadcaster;
+    std::shared_ptr<tf2_ros::StaticTransformBroadcaster> m_tf_broadcaster;
 
     // methods
     void broadcast_world_odom();
