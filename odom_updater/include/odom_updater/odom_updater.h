@@ -2,7 +2,7 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include <nav_msgs/msg/odometry.hpp>
-#include "geometry_msgs/msg/pose.hpp"
+// #include "geometry_msgs/msg/pose.hpp"
 #include "tf2_ros/transform_broadcaster.h"
 #include <string>
 #include<sstream>
@@ -17,13 +17,13 @@ public:
         tf_broadcaster =
             std::make_shared<tf2_ros::TransformBroadcaster>(this);
 
-        std::ostringstream stream;
-        stream << "/robot1/odom";
+        // std::ostringstream stream;
+        // stream << "/robot1/odom";
 
-        std::string topic_name = stream.str();
+        // std::string topic_name = stream.str();
 
         odom_subscriber = this->create_subscription<nav_msgs::msg::Odometry>(
-        topic_name, 10,
+        "/robot1/odom", 10,
         std::bind(&OdomBroadcaster::odom_callback, this, std::placeholders::_1));
 
         // Create a timer

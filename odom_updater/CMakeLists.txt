@@ -13,14 +13,14 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
-find_package(geometry_msgs REQUIRED)
+# find_package(geometry_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
 
 include_directories(include/odom_updater)
 
 add_executable(odom_updater src/odom_updater.cpp src/main.cpp)
-ament_target_dependencies(odom_updater rclcpp geometry_msgs nav_msgs tf2_ros)
+ament_target_dependencies(odom_updater rclcpp nav_msgs tf2_ros)
 
 install(TARGETS 
 odom_updater
