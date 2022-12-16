@@ -5,9 +5,9 @@
   <version>0.0.0</version>
   <description>Main package for the final project</description>
   <maintainer email="kshitij@umd.edu">Kshitij Karnawat</maintainer>
-  <!-- <maintainer email="">Sai Teja Gilukara</maintainer> -->
+  <maintainer email="saitejag@umd.edu">Sai Teja Gilukara</maintainer>
   <maintainer email="akasparm@umd.edu">Akashkumar Parmar</maintainer>
-  <!-- <maintainer email="">Aashrita Chemakura</maintainer> -->
+  <maintainer email="achemaku@umd.edu">Aashrita Chemakura</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

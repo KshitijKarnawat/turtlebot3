@@ -1,3 +1,14 @@
+/**
+ * @file        target_reacher.cpp
+ * @author      Kshitij Karnawat (kshitij@umd.edu)
+ * @brief       
+ * @version     0.6
+ * @date        2022-12-16
+ * 
+ * @copyright   Copyright (c) 2022
+ * 
+ */
+
 #include <rclcpp/rclcpp.hpp>
 #include "target_reacher/target_reacher.h"
 #include <string>
@@ -57,37 +68,35 @@ void TargetReacher::aruco_callback(const ros2_aruco_interfaces::msg::ArucoMarker
         final_x = aruco_3_x.as_double();
         final_y = aruco_3_y.as_double();
     }
-    // set_final_goal();
-    m_bot_controller->set_goal(final_x, final_y);
+    set_goal();
 }
 
+void TargetReacher::timer_callback(){
+    geometry_msgs::msg::TransformStamped tf;
 
-// void TargetReacher::broadcast_timer_callback() {
-//     geometry_msgs::msg::TransformStamped t;
+    tf.header.stamp = this->get_clock()->now();
+    
+    rclcpp::Parameter origin = this->get_parameter("final_destination.frame_id");
+    final_origin = origin.as_string();
+    
+    tf.header.frame_id = final_origin;
+    tf.child_frame_id = "final_destination";
+    
+    tf.transform.translation.x = final_x;
+    tf.transform.translation.y = final_y;
+    tf.transform.translation.z = 0.0;
+    tf.transform.rotation.x = 0.0;
+    tf.transform.rotation.y = 0.0;
+    tf.transform.rotation.z = 0.0;
+    tf.transform.rotation.w = 1.0;
 
-//     t.header.stamp = this->get_clock()->now();
-    
-//     rclcpp::Parameter origin = this->get_parameter("final_destination.frame_id");
-//     final_origin = origin.as_string();
-    
-//     t.header.frame_id = final_origin;
-//     t.child_frame_id = "final_destination";
-    
-//     t.transform.translation.x = final_x;
-//     t.transform.translation.y = final_y;
-//     t.transform.translation.z = 0.0;
-//     t.transform.rotation.x = 0.0;
-//     t.transform.rotation.y = 0.0;
-//     t.transform.rotation.z = 0.0;
-//     t.transform.rotation.w = 1.0;
+    final_destination_broadcaster->sendTransform(tf);
+}
 
-//     final_destination_broadcaster->sendTransform(t);
-// }
-
-// void TargetReacher::set_final_goal() {
-//     geometry_msgs::msg::TransformStamped t;
+void TargetReacher::set_goal(){
+    geometry_msgs::msg::TransformStamped tf;
     
-//     t = final_transform_buffer->lookupTransform("robot1/odom", "final_destination", tf2::TimePointZero);
+    tf = final_destination_buffer->lookupTransform("robot1/odom", "final_destination", tf2::TimePointZero);
     
-//     m_bot_controller->set_goal(t.transform.translation.x, t.transform.translation.y);
-// }
+    m_bot_controller->set_goal(tf.transform.translation.x, tf.transform.translation.y);
+}
