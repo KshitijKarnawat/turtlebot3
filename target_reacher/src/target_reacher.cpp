@@ -1,5 +1,6 @@
 #include <rclcpp/rclcpp.hpp>
 #include "target_reacher/target_reacher.h"
+#include <string>
 
 void TargetReacher::spin(){
 
@@ -14,16 +15,13 @@ void TargetReacher::spin(){
 }
 
 void TargetReacher::goal_reached_callback(const std_msgs::msg::Bool::SharedPtr msg){
-   if(msg->data){
+   if(msg->data && (flag==1)){
         spin();
    }
 }
 
 void TargetReacher::aruco_callback(const ros2_aruco_interfaces::msg::ArucoMarkers::SharedPtr msg){
-    
-    auto final_x{0};
-    auto final_y{0};
-
+    flag = 0;
     if(msg->marker_ids.at(0) == 0){
         // get parameters
         rclcpp::Parameter aruco_0_x = this->get_parameter("final_destination.aruco_0.x");
@@ -59,5 +57,37 @@ void TargetReacher::aruco_callback(const ros2_aruco_interfaces::msg::ArucoMarker
         final_x = aruco_3_x.as_double();
         final_y = aruco_3_y.as_double();
     }
+    // set_final_goal();
     m_bot_controller->set_goal(final_x, final_y);
 }
+
+
+// void TargetReacher::broadcast_timer_callback() {
+//     geometry_msgs::msg::TransformStamped t;
+
+//     t.header.stamp = this->get_clock()->now();
+    
+//     rclcpp::Parameter origin = this->get_parameter("final_destination.frame_id");
+//     final_origin = origin.as_string();
+    
+//     t.header.frame_id = final_origin;
+//     t.child_frame_id = "final_destination";
+    
+//     t.transform.translation.x = final_x;
+//     t.transform.translation.y = final_y;
+//     t.transform.translation.z = 0.0;
+//     t.transform.rotation.x = 0.0;
+//     t.transform.rotation.y = 0.0;
+//     t.transform.rotation.z = 0.0;
+//     t.transform.rotation.w = 1.0;
+
+//     final_destination_broadcaster->sendTransform(t);
+// }
+
+// void TargetReacher::set_final_goal() {
+//     geometry_msgs::msg::TransformStamped t;
+    
+//     t = final_transform_buffer->lookupTransform("robot1/odom", "final_destination", tf2::TimePointZero);
+    
+//     m_bot_controller->set_goal(t.transform.translation.x, t.transform.translation.y);
+// }

@@ -6,6 +6,10 @@
 #include "bot_controller/bot_controller.h"
 #include "ros2_aruco_interfaces/msg/aruco_markers.hpp"
 #include "tf2_ros/transform_broadcaster.h"
+#include <std_msgs/msg/bool.hpp>
+#include "tf2_ros/static_transform_broadcaster.h"
+#include "tf2_ros/transform_listener.h"
+#include "tf2_ros/buffer.h"
 
 // timer
 class TargetReacher : public rclcpp::Node
@@ -39,6 +43,16 @@ public:
         // subscriber to topic /aruco_marker
         aruco_subscriber = this->create_subscription<ros2_aruco_interfaces::msg::ArucoMarkers>("/aruco_markers", 10, std::bind(&TargetReacher::aruco_callback, this, std::placeholders::_1));
 
+
+        // // final transform
+        //  final_destination_broadcaster = std::make_shared<tf2_ros::StaticTransformBroadcaster>(this);
+       
+        // broadcast_timer = this->create_wall_timer(std::chrono::milliseconds((int)(100.0)), std::bind(&TargetReacher::broadcast_timer_callback, this));
+        
+        // final_transform_buffer = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+       
+        // final_transform_listener = std::make_shared<tf2_ros::TransformListener>(*final_transform_buffer);
+
     }
 
     void spin();
@@ -48,6 +62,10 @@ public:
 private:
     // attributes
     std::shared_ptr<BotController> m_bot_controller;
+    double final_x{0};
+    double final_y{0};
+    int flag{1};
+    std::string final_origin;
 
     // Subscribers
     rclcpp::Subscription<std_msgs::msg::Bool>::SharedPtr goal_reached_subscriber;
@@ -56,6 +74,21 @@ private:
 
     // Publishers
     rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr spin_publisher;
+
+
+    //final transform
+    // rclcpp::TimerBase::SharedPtr broadcast_timer{nullptr};
+    
+    // // rclcpp::TimerBase::SharedPtr listener_timer{nullptr};
+    // std::shared_ptr<tf2_ros::StaticTransformBroadcaster> final_destination_broadcaster{nullptr};
+    
+    // void broadcast_timer_callback();
+    
+    // std::shared_ptr<tf2_ros::TransformListener> final_transform_listener{nullptr};
+    
+    // std::unique_ptr<tf2_ros::Buffer> final_transform_buffer;
+    
+    // void set_final_goal();
 
 };
 
